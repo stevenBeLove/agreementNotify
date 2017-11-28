@@ -6,6 +6,7 @@ package com.alipay.servlet.gateway;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -72,11 +73,13 @@ public class GatewayServlet extends HttpServlet {
             //2. 验证签名
             this.verifySign(params);
 
-            //3. 获取业务执行器   根据请求中的 service, msgType, eventType, actionParam 确定执行器
-            ActionExecutor executor = Dispatcher.getExecutor(params);
+//            //3. 获取业务执行器   根据请求中的 service, msgType, eventType, actionParam 确定执行器
+//            ActionExecutor executor = Dispatcher.getExecutor(params);
 
             //4. 执行业务逻辑
-            responseMsg = executor.execute();
+//            responseMsg = executor.execute();
+            responseMsg =  buildBaseAckMsg();
+            System.out.println(responseMsg);
 
         } 
         catch (AlipayApiException alipayApiException) {
@@ -164,4 +167,22 @@ public class GatewayServlet extends HttpServlet {
 		return sb.toString();
 	}
 
+	
+	 /**
+     * 构造基础的响应消息
+     * 
+     * @return
+     */
+    public static String buildBaseAckMsg() {
+    	String code = "10000";
+    	String msg = "success";
+    	String econotify= "success";
+        StringBuilder sb = new StringBuilder();
+        sb.append("<XML>");
+        sb.append("<code><![CDATA[" + code + "]]></code>");
+        sb.append("<msg><![CDATA[" + msg + "]]></msg>");
+        sb.append("<econotify><![CDATA[" + econotify + "]]></econotify>");
+        sb.append("</XML>");
+        return sb.toString();
+    }
 }
